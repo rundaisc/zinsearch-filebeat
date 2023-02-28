@@ -1,0 +1,32 @@
+version: "3"
+services:
+    zincsearch:
+      image: public.ecr.aws/zinclabs/zinc:0.4.1
+      container_name: zincsearch
+      environment:
+        - ZINC_FIRST_ADMIN_USER=whizcity
+        - ZINC_FIRST_ADMIN_PASSWORD=whizcity@2022
+        - ZINC_DATA_PATH=/data
+      volumes:
+        - ./data:/data  
+      ports:
+        - 14080:4080
+      networks:
+        - "logs-net"
+    filebeat:
+      image: elastic/filebeat:8.6.2
+      container_name: filebeat
+      environment:
+        - ELASTICSEARCH_HOSTS=172.19.0.2:4080
+        - ELASTICSEARCH_USERNAME=admin
+        - ELASTICSEARCH_PASSWORD=2222
+      volumes:
+        - ./filebeat.yml:/usr/share/filebeat/filebeat.yml
+        - C:\whizcity\code\platform_server\storage\logs:/var/log/platform_server/
+      networks:
+        - "logs-net"
+      depends_on:
+        - "zincsearch"
+networks:
+      logs-net:
+        external: true
