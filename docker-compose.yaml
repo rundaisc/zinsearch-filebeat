@@ -4,6 +4,7 @@ services:
   zincsearch:
     image: public.ecr.aws/zinclabs/zinc:0.4.1
     container_name: zincsearch
+    restart: always
     environment:
       - ZINC_FIRST_ADMIN_USER=admin #zincsearch账号
       - ZINC_FIRST_ADMIN_PASSWORD=admin  #zincsearch密码
@@ -17,6 +18,7 @@ services:
   filebeat:
     image: elastic/filebeat:8.6.2
     container_name: filebeat
+    restart: always
     environment:
       - ELASTICSEARCH_HOSTS=172.19.0.2:4080  #替换为zincsearch的IP 端口
       - ELASTICSEARCH_USERNAME=admin  #替换为zincsearch的账号
