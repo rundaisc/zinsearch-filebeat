@@ -10,23 +10,33 @@ processors:
 setup.ilm.enabled: false
 setup.template.overwrite: true
 setup.template.enabled: true
-setup.template.name: "whizcity"
-setup.template.pattern: "whizcity-*"
+setup.template.name: "logs"
+setup.template.pattern: "logs-*"
 filebeat.inputs:
 - type: filestream
-  id: platform
+  id: platform   #读取指定日志文件，并创建索引
   paths:
     - /var/log/platform_server/*.log
     - /var/log/platform_server/operation/*.log
   fields:
      type: platform
-output.elasticsearch:
+- type: filestream
+  id: discount  #读取指定日志文件，并创建索引
+  paths:
+    - /var/log/discount_server/*.log
+    - /var/log/discount_server/operation/*.log
+  fields:
+    type: discount
+output.elasticsearch: #输出日志到 zinsearch
   hosts: '${ELASTICSEARCH_HOSTS:elasticsearch:9200}'
   path: "/es/"
   username: '${ELASTICSEARCH_USERNAME:}'
   password: '${ELASTICSEARCH_PASSWORD:}'
-  index: "whizcity-%{[fields.type]}-%{+yyyy.MM.dd}"
-  indices: 
-    - index: whizcity-platform-%{+yyyy.MM.dd}
+  index: "logs-%{[fields.type]}-%{+yyyy.MM.dd}"
+  indices:
+    - index: logs-platform-%{+yyyy.MM.dd}
       when.equals:
-         fields.type: platform   
+         fields.type: platform
+    - index: logs-discount-%{+yyyy.MM.dd}
+        when.equals:
+          fields.type: discount
