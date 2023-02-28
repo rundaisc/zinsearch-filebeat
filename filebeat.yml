@@ -38,5 +38,5 @@ output.elasticsearch: #输出日志到 zinsearch
       when.equals:
          fields.type: platform
     - index: logs-discount-%{+yyyy.MM.dd}
-        when.equals:
-          fields.type: discount
+      when.equals:
+         fields.type: discount
